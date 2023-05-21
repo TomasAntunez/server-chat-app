@@ -3,12 +3,12 @@ import { Socket, Server as SocketServer } from 'socket.io';
 
 export class Sockets {
 
-    constructor( private io: SocketServer ) {
-        this.setSocketEvents();
-    }
+    constructor(
+        private io: SocketServer
+    ) {}
 
 
-    private setSocketEvents() {
+    public setEvents() {
 
         this.io.on( 'connection', (socket: Socket) => {
 

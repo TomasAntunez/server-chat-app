@@ -3,9 +3,10 @@ import express, { Application } from 'express';
 import { Server as SocketServer } from 'socket.io';
 
 import { Sockets } from './sockets';
+import { Environment } from './config/environment-variables';
 
 
-export class ServerBootstrap {
+export class ServerBootstrap extends Environment {
 
     private app: Application = express();
     private port: number = Number(process.env.PORT) || 5000; // TODO: Config botenv
@@ -13,21 +14,20 @@ export class ServerBootstrap {
     private server: HTTPServer = createServer( this.app );
     private io = new SocketServer( this.server );
 
+    private sockets = new Sockets(this.io);
+
 
     constructor() {
+        super();
         this.setMiddlewares();
 
-        this.setSockets();
+        this.sockets.setEvents()
     }
 
 
     private setMiddlewares() {
         this.app.use( express.json() );
         this.app.use( express.static('public') );
-    }
-
-    private setSockets() {
-        new Sockets( this.io );
     }
 
     public run() {

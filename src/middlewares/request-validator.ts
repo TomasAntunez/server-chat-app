@@ -10,7 +10,6 @@ export class RequestValidator {
         }));
     }
 
-
     private static checkResult( req: Request, res: Response, next: NextFunction ) {
 
         const result: Result = validationResult( req );

@@ -41,7 +41,7 @@ export class AuthController {
         try {
             const user = await User.findOne({ email });
             if ( !user ) {
-                return res.status(404).json({ ok: false, msg: 'Email no encontrado' });
+                return res.status(404).json({ ok: false, msg: 'That user does not exists' });
             }
 
             const validPassword = await compare( password, user.password );
@@ -73,6 +73,7 @@ export class AuthController {
 
         res.json({
             ok: true,
+            user,
             token
         });
     }

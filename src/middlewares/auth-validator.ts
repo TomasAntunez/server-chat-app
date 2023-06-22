@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { jwt, Payload } from '../utils/jwt';
+import { jwt } from '../utils/jwt';
 
 
 export class AuthValidator {
@@ -12,7 +12,7 @@ export class AuthValidator {
                 throw new Error();
             }
 
-            const { id } = <Payload>await jwt.validate( accessToken );
+            const { id } = await jwt.validate( accessToken );
 
             req.userId = id;
 

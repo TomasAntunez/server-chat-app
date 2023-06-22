@@ -1,4 +1,4 @@
-import { sign, verify, Secret, JwtPayload, VerifyErrors } from 'jsonwebtoken';
+import { sign, verify, Secret } from 'jsonwebtoken';
 
 import { Environment } from '../config/environment-variables';
 
@@ -25,7 +25,7 @@ class JSONWebToken extends Environment {
         });
     }
 
-    public validate( token: string ): Promise<Payload | VerifyErrors> {
+    public validate( token: string ): Promise<Payload> {
 
         return new Promise( (resolve, reject) => {
             verify( token, this.secretKey, ( error, decoded ) => {

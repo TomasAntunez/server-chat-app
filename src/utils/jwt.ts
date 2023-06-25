@@ -6,12 +6,12 @@ import { Environment } from '../config/environment-variables';
 export type Payload = { id: string };
 
 
-class JSONWebToken extends Environment {
+export class JSONWebToken extends Environment {
 
-    private secretKey: Secret = <string>this.getEnvVariable('JWT_KEY');
+    private secretKey: Secret = this.env.JWT_KEY;
 
 
-    public generate( payload: Payload ): Promise<string | Error> {
+    generate( payload: Payload ): Promise<string | Error> {
 
         return new Promise( (resolve, reject) => {
 
@@ -25,7 +25,11 @@ class JSONWebToken extends Environment {
         });
     }
 
+<<<<<<< HEAD
     public validate( token: string ): Promise<Payload> {
+=======
+    validate( token: string ): Promise<Payload> {
+>>>>>>> feat/socket-auth
 
         return new Promise( (resolve, reject) => {
             verify( token, this.secretKey, ( error, decoded ) => {
@@ -36,6 +40,3 @@ class JSONWebToken extends Environment {
     }
 
 }
-
-
-export const jwt = new JSONWebToken();

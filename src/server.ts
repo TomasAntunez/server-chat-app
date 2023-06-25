@@ -4,23 +4,25 @@ import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
 
 import { Sockets } from './sockets';
-import { Environment } from './config/environment-variables';
-import { AuthRouter } from './routers/auth-router';
-import { MessageRouter } from './routers/message-router';
+import { Environment } from './config';
+import { AuthRouter } from './auth';
+import { MessageRouter } from './message';
+import { routers } from './routes';
 
 
 export class ServerBootstrap extends Environment {
 
     private app: Application = express();
-    private port: number = Number(this.getEnvVariable('PORT')) || 5000;
+    private port: number = this.env.PORT || 5000;
 
     private server: HTTPServer = createServer( this.app );
     private io = new SocketServer( this.server );
 
     private sockets = new Sockets(this.io);
 
+
     private authRouter = new AuthRouter();
-    private messageRouter = new MessageRouter();
+    private messgaeRouter = new MessageRouter();
 
 
     constructor() {
@@ -51,8 +53,9 @@ export class ServerBootstrap extends Environment {
     }
 
     private setRouters() {
-        this.app.use( '/api/auth', this.authRouter.router );
-        this.app.use( '/api/messages', this.messageRouter.router );
+        routers.forEach( router => {
+            this.app.use( `/api${ router[0] || '' }`, router[1] );
+        });
     }
 
     public run() {

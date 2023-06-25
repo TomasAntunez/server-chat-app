@@ -4,13 +4,13 @@ import { validationResult, Result, ValidationChain, body } from 'express-validat
 
 export class RequestValidator {
 
-    private static async runValidations( req: Request, validations: Array<ValidationChain> ) {
+    private async runValidations( req: Request, validations: Array<ValidationChain> ) {
         await Promise.all( validations.map( validation => {
             validation.run( req )
         }));
     }
 
-    private static checkResult( req: Request, res: Response, next: NextFunction ) {
+    private checkResult( req: Request, res: Response, next: NextFunction ) {
 
         const result: Result = validationResult( req );
         if ( !result.isEmpty() ) {
@@ -24,26 +24,26 @@ export class RequestValidator {
     }
 
     
-    public static async validateLogin( req: Request, res: Response, next: NextFunction ) {
+    public async validateLogin( req: Request, res: Response, next: NextFunction ) {
 
-        await RequestValidator.runValidations( req, [
+        await this.runValidations( req, [
             body( 'email', 'Email is required' ).isEmail(),
             body( 'password', 'Password is required' ).notEmpty()
         ]);
 
-        RequestValidator.checkResult( req, res, next );
+        this.checkResult( req, res, next );
     }
 
 
-    public static async validateRegister( req: Request, res: Response, next: NextFunction ) {
+    public async validateRegister( req: Request, res: Response, next: NextFunction ) {
         
-        await RequestValidator.runValidations( req, [
+        await this.runValidations( req, [
             body( 'name', 'Name is required' ).notEmpty(),
             body( 'password', 'Password is required' ).notEmpty(),
             body( 'email', 'Email is required' ).isEmail()
         ]);
 
-        RequestValidator.checkResult( req, res, next );
+        this.checkResult( req, res, next );
     }
 
 }

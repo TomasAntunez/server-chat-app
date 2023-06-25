@@ -1,12 +1,22 @@
 import { Socket, Server as SocketServer } from 'socket.io';
 
+<<<<<<< HEAD
 import { jwt } from './utils/jwt';
 import { SocketController } from './controllers/socket-controller';
+=======
+import { JSONWebToken } from './utils/jwt';
+import { UserServices } from './user';
+>>>>>>> feat/socket-auth
 
 
 export class Sockets {
 
+<<<<<<< HEAD
     private controller = new SocketController();
+=======
+    private userServices = new UserServices();
+    private jwt = new JSONWebToken();
+>>>>>>> feat/socket-auth
 
     constructor(
         private io: SocketServer
@@ -22,13 +32,21 @@ export class Sockets {
             let userId: string;
 
             try {
+<<<<<<< HEAD
                 userId = (await jwt.validate( socket.handshake.query['x-token'] as string )).id;
+=======
+                userId = (await this.jwt.validate( socket.handshake.query['x-token'] as string )).id;
+>>>>>>> feat/socket-auth
             } catch (error) {
                 console.log('invalid socket, disconnected');
                 return socket.disconnect();
             }
 
+<<<<<<< HEAD
             await this.controller.connectUser( userId );
+=======
+            await this.userServices.setUserOnline( userId, true );
+>>>>>>> feat/socket-auth
 
 
             // TODO: validate JWT
@@ -47,7 +65,11 @@ export class Sockets {
             // mark in the database that the user logged out
 
             socket.on( 'disconnect', async () => {
+<<<<<<< HEAD
                 await this.controller.disconnectUser( userId );
+=======
+                await this.userServices.setUserOnline( userId, false );
+>>>>>>> feat/socket-auth
                 console.log('client disconnected');
             });
         });

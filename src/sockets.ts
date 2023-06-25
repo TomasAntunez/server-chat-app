@@ -1,12 +1,13 @@
 import { Socket, Server as SocketServer } from 'socket.io';
 
-import { jwt } from './utils/jwt';
-import { SocketController } from './controllers/socket-controller';
+import { JSONWebToken } from './utils/jwt';
+import { UserServices } from './user';
 
 
 export class Sockets {
 
-    private controller = new SocketController();
+    private userServices = new UserServices();
+    private jwt = new JSONWebToken();
 
     constructor(
         private io: SocketServer
@@ -22,13 +23,13 @@ export class Sockets {
             let userId: string;
 
             try {
-                userId = (await jwt.validate( socket.handshake.query['x-token'] as string )).id;
+                userId = (await this.jwt.validate( socket.handshake.query['x-token'] as string )).id;
             } catch (error) {
                 console.log('invalid socket, disconnected');
                 return socket.disconnect();
             }
 
-            await this.controller.connectUser( userId );
+            await this.userServices.setUserOnline( userId, true );
 
 
             // TODO: validate JWT
@@ -47,7 +48,7 @@ export class Sockets {
             // mark in the database that the user logged out
 
             socket.on( 'disconnect', async () => {
-                await this.controller.disconnectUser( userId );
+                await this.userServices.setUserOnline( userId, false );
                 console.log('client disconnected');
             });
         });

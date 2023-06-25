@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import { genSalt, hash, compare } from 'bcryptjs';
 
-import { User } from '../models/user';
-import { jwt } from '../utils/jwt';
+import { User, JSONWebToken } from '../';
 
 
 export class AuthController {
+
+    private jwt = new JSONWebToken();
+
 
     public async register( { body }: Request, res: Response ) {
         try {
@@ -23,7 +25,7 @@ export class AuthController {
 
             await user.save();
 
-            const token = await jwt.generate({ id: user.id });
+            const token = await this.jwt.generate({ id: user.id });
 
             res.status(201).json({ ok: true, user, token });
 
@@ -49,7 +51,7 @@ export class AuthController {
                 return res.status(400).json({ ok: false, msg: 'Password is invalid' });
             }
 
-            const token = await jwt.generate({ id: user.id });
+            const token = await this.jwt.generate({ id: user.id });
             
             res.status(200).json({ ok: true, user, token });
 
@@ -69,7 +71,7 @@ export class AuthController {
             return res.status(404).json({ ok: false, msg: 'User not found' });
         }
 
-        const token = await jwt.generate({ id });
+        const token = await this.jwt.generate({ id });
 
         res.json({
             ok: true,

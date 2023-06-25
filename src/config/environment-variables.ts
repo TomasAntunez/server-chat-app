@@ -1,16 +1,21 @@
-import { env } from 'node:process';
 import { config } from 'dotenv';
 
 
 export abstract class Environment {
-
+    
+    protected env = process.env;
+    
     constructor() {
-        config({ path: '.env' });
+        config({ path: this.path });
     }
 
+    private get path(): string {
+        let nodeEnv = this.env.NODE_ENV;
+        if (!nodeEnv) {
+            nodeEnv = 'development';
+        }
 
-    protected getEnvVariable(variable: string): string | undefined {
-        return env[variable];
+        return `.env.${nodeEnv}`;
     }
 
 }

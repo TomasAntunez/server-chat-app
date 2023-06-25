@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { Message } from '../models/message';
+import { Message } from '../models';
 
 
 export class MessageController {

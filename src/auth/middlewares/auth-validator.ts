@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { JSONWebToken } from '../../utils';
+import { JSONWebToken } from '../';
 
 
 export class AuthValidator {

@@ -1,6 +1,6 @@
 import { sign, verify, Secret } from 'jsonwebtoken';
 
-import { Environment } from '../config/environment-variables';
+import { Environment } from '../config';
 
 
 export type Payload = { id: string };
@@ -25,11 +25,7 @@ export class JSONWebToken extends Environment {
         });
     }
 
-<<<<<<< HEAD
-    public validate( token: string ): Promise<Payload> {
-=======
     validate( token: string ): Promise<Payload> {
->>>>>>> feat/socket-auth
 
         return new Promise( (resolve, reject) => {
             verify( token, this.secretKey, ( error, decoded ) => {

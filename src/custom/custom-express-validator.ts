@@ -1,8 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
-import { ExpressValidator, CustomSchema, Location, Result, ValidationError } from 'express-validator';
+import {
+  ExpressValidator,
+  CustomSchema,
+  Location,
+  Result,
+  ValidationError,
+  ErrorFormatter,
+  matchedData
+} from 'express-validator';
+
+import { ResponseError, CustomError } from '../utils';
 
 
-const customValidator = new ExpressValidator();
+const errorFormatter: ErrorFormatter<CustomError> = error => {
+  let customError: CustomError = { msg: 'Invalid data' };
+
+  if (error.type === 'field') {
+    customError = {
+      location: error.location,
+      param: error.path,
+      msg: error.msg,
+      value: error.value
+    };
+  }
+
+  return customError;
+};
+
+
+const customValidator = new ExpressValidator( {}, {}, { errorFormatter });
 
 
 export type RequestScheme = CustomSchema<typeof customValidator>
@@ -26,17 +52,19 @@ export abstract class CustomRequestValidator {
       await this.validator.checkSchema( scheme, locations ).run( req );
 
       const result: Result = this.validator.validationResult( req );
-      if ( result.isEmpty() ) return next();
+      if ( !result.isEmpty() ) {
+        const errors: Array<ValidationError> = result.array();
+        throw new ResponseError( 400, errors );
+      };
 
-      const errors: Array<ValidationError> = result.array();
+      locations.forEach( location => {
+        req[location] = matchedData(req, { locations: [location] });
+      });
 
-      console.log(errors);
-  
-      throw new Error();
+      return next();
 
     } catch (error) {
-      console.log(error);
-      res.status(400).json({ msg: 'Invalid data' });
+      ResponseError.sendHttpError(res, error);
     }
   }
 

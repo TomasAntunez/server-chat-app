@@ -13,7 +13,7 @@ import { routers } from './routes';
 export class ServerBootstrap extends Environment {
 
     private app: Application = express();
-    private port: number = this.env.PORT || 5000;
+    private port: number = this.env.PORT || 8001;
 
     private server: HTTPServer = createServer( this.app );
     private io = new SocketServer( this.server );

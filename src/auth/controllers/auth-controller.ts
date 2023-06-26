@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { genSalt, hash, compare } from 'bcryptjs';
 
-import { User, JSONWebToken } from '../';
+import { User, JSONWebToken, ResponseError } from '../';
 
 
 export class AuthController {
@@ -15,7 +15,12 @@ export class AuthController {
 
             const userExists = await User.findOne({ email });
             if ( userExists ) {
-                return res.status(400).json({ ok: false, msg: 'This email is already in use' });
+                throw new ResponseError( 400, [{
+                    location: 'body',
+                    param: 'email',
+                    msg: 'This email is already in use',
+                    value: email,
+                }]);
             }
 
             const user = new User(body);
@@ -30,8 +35,7 @@ export class AuthController {
             res.status(201).json({ ok: true, user, token });
 
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ ok: false, msg: 'Server error' })
+            ResponseError.sendHttpError( res, error );
         }
     }
 
@@ -56,8 +60,7 @@ export class AuthController {
             res.status(200).json({ ok: true, user, token });
 
         } catch (error) {
-            console.log(error);
-            res.status(500).json({ ok: false, msg: 'Server error' })
+            ResponseError.sendHttpError( res, error );
         }
     }
     

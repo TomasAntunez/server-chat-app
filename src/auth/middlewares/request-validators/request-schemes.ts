@@ -8,6 +8,7 @@ export class AuthRequestSchemes {
     name: {
       errorMessage: 'The name is required',
       isString: true,
+      trim: true,
       notEmpty: true,
       isLength: {
         options: { min: 3, max: 30 },

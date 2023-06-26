@@ -11,9 +11,11 @@ export class MessageRouter extends CustomRouter<MessageController> {
 
   private authValidator = new AuthValidator();
 
+  
   constructor() {
     super( new MessageController );
   }
+
 
   setRoutes(): void {
     this.router.get( '/:from',

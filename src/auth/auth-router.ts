@@ -18,7 +18,7 @@ export class AuthRouter extends CustomRouter<AuthController> {
   }
 
 
-  setRoutes(): void {
+  setRoutes() {
     this.router.post( '/register',
       [
         (req: Request, res: Response, next: NextFunction) =>
@@ -28,6 +28,10 @@ export class AuthRouter extends CustomRouter<AuthController> {
     );
 
     this.router.post( '/login',
+      [
+        (req: Request, res: Response, next: NextFunction) =>
+          this.requestValidator.login(req, res, next)
+      ],
       (req: Request, res: Response) => this.controller.login(req, res)
     );
 

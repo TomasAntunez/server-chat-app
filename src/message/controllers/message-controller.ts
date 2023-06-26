@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import { Message } from '../models';
+import { ResponseError } from '../';
 
 
 export class MessageController {
@@ -17,7 +18,7 @@ export class MessageController {
             res.status(200).json({ ok: true, messages: lastThirtyMessages });       
 
         } catch (error) {
-            console.log(error);
+            ResponseError.sendHttpError(res, error);
         }
     }
 

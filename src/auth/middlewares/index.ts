@@ -1,3 +1,3 @@
 
 export { AuthValidator } from './auth-validator';
-export { AuthRequestValidator } from './request-validators';
+export { AuthRequestValidator } from './auth-request-validator';

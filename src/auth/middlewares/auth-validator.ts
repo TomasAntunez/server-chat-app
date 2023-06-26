@@ -1,15 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { JSONWebToken } from '../';
+import { JSONWebToken, ResponseError } from '../';
+import { getAuthErrors } from '../utils';
 
 
 export class AuthValidator {
 
   private jwt = new JSONWebToken();
+  
 
   public async validateAccessToken( req: Request, res: Response, next: NextFunction ) {
+
+    let accessToken: string | undefined;
+
     try {
-      const accessToken = req.header('x-token');
+      accessToken = req.header('x-token');
       if ( !accessToken ) throw new Error();
 
       const { id } = await this.jwt.validate( accessToken );
@@ -19,8 +24,7 @@ export class AuthValidator {
       next();
 
     } catch (error) {
-      console.log(error);
-      res.status(401).json({ ok: false, msg: 'Invalid access' });
+      ResponseError.sendHttpError( res, new ResponseError( 401, getAuthErrors( accessToken )));
     }
   }
 

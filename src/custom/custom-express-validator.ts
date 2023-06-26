@@ -40,6 +40,7 @@ type ValidationParams = {
   next: NextFunction;
   locations: Array<Location>;
   scheme: RequestScheme;
+  personalizedError?: [ status: number, errors: Array<CustomError>];
 }
 
 
@@ -47,12 +48,14 @@ export abstract class CustomRequestValidator {
 
   protected validator = customValidator;
 
-  protected async executeValidation( { req, res, next, locations, scheme }: ValidationParams ){
+  protected async executeValidation( { req, res, next, locations, scheme, personalizedError }: ValidationParams ){
     try {
       await this.validator.checkSchema( scheme, locations ).run( req );
 
       const result: Result = this.validator.validationResult( req );
+
       if ( !result.isEmpty() ) {
+        if (personalizedError) throw new ResponseError( personalizedError[0], personalizedError[1] );
         const errors: Array<ValidationError> = result.array();
         throw new ResponseError( 400, errors );
       };

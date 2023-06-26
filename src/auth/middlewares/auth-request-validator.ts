@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 
-import { CustomRequestValidator } from '../../';
+import { CustomRequestValidator } from '../';
 import { AuthRequestSchemes } from './request-schemes';
+import { getLoginErrors } from '../utils';
 
 
 export class AuthRequestValidator extends CustomRequestValidator {
@@ -17,8 +18,19 @@ export class AuthRequestValidator extends CustomRequestValidator {
     });
   }
 
-  // public login( req: Request, res: Response, next: NextFunction ) {
-
-  // }
+  public login( req: Request, res: Response, next: NextFunction ) {
+    this.executeValidation({
+      req, res, next,
+      locations: ['body'],
+      scheme: this.requestSchemes.loginScheme,
+      personalizedError: [
+        403,
+        getLoginErrors({
+          email: req.body.email,
+          password: req.body.password
+        })
+      ]
+    });
+  }
 
 }

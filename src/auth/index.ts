@@ -2,7 +2,7 @@
 // IMPORTS
 export { CustomRouter, CustomRequestValidator, RequestScheme } from '../custom';
 export { User } from '../user';
-export { JSONWebToken, ResponseError } from '../utils';
+export { JSONWebToken, ResponseError, CustomError } from '../utils';
 
 // EXPORTS
 export { AuthRouter } from './auth-router';

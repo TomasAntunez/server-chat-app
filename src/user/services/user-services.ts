@@ -19,4 +19,15 @@ export class UserServices {
     }
   }
 
+
+  public getUsers = async () => {
+    try {
+      return await User.find().sort({ online: -1 });
+
+    } catch (error) {
+      console.log(error);
+      return { ok: false, msg: 'Server error' };
+    }
+  }
+
 }

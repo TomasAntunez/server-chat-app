@@ -6,14 +6,16 @@ import { ResponseError } from '../';
 
 export class MessageController {
 
-    public async getMessages( { userId, params: { from } }: Request, res: Response ) {
+    public async getMessages( { userId, params }: Request, res: Response ) {
+        const { from } = params;
+
         try {
             const lastThirtyMessages = await Message.find({
                 $or: [
                     { from: userId, to: from },
                     { from, to: userId }
                 ]
-            }).sort({ createdAt: 'desc' }).limit( 30 );
+            }).sort({ createdAt: 'asc' }).limit( 30 );
     
             res.status(200).json({ ok: true, messages: lastThirtyMessages });       
 

@@ -11,5 +11,5 @@ type RouterData = [
 
 export const routers: Array<RouterData> = [
   [ '/auth',    new AuthRouter().router    ],
-  [ '/message', new MessageRouter().router ]
+  [ '/messages', new MessageRouter().router ]
 ]
